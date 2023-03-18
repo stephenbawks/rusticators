@@ -1,0 +1,4 @@
+aws-lambda-powertools[all]
+httpx
+ipaddress
+boto3
