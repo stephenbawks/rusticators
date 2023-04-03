@@ -1,5 +1,7 @@
 # Rusticators
 - [Rusticators](#rusticators)
+- [API](#api)
+  - [Base API URL](#base-api-url)
 - [VPC's](#vpcs)
   - [VPC Types](#vpc-types)
     - [Type A](#type-a)
@@ -9,6 +11,14 @@
 
 
 Rusticators API is capable of doing a few things with the intention of adding more in the future.
+
+# API
+
+Cutting the chase, here are the instructions for communicating with the API. As well as the endpoints and what each one is doing.
+
+## Base API URL
+https://api.rusticators.dev
+
 
 # VPC's
 
