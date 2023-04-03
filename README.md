@@ -3,6 +3,7 @@
 - [API](#api)
   - [Base API URL](#base-api-url)
 - [VPC's](#vpcs)
+  - [Body](#body)
   - [VPC Types](#vpc-types)
     - [Type A](#type-a)
       - [Subnet Mask](#subnet-mask)
@@ -27,6 +28,21 @@ VPC layouts and subnetting can be difficult.  Created this years ago and wanted 
 There are a few different layouts that I have found to work well.  The catch with subnet math is that most of the time it does not play well with being able to use the full amount of IP space.  Add in the fact that each subnet in AWS has an overhead of 5 IPs that are unuseable as they are reservered for AWS networking reasons. There is a little trade-off or balance between trying to achieve the most amount of unsable space while also providing a VPC layout that offers up some protection for "blast radius" and general high availability best practices.
 
 Typically I generally reccomend a VPC with three availability zones, however there are a few locations where three is not possible.  I have also included a VPC layout that is built around 2 availability zones.
+
+## Body
+
+When requesting a VPC layout you just need to make sure that you are sending a `POST` request to the VPC endpoint. You also just need to pass in the required variables to have it generate you a layout. You can use the example below and amend it as needed.
+
+- URL: `https://api.rusticators.dev/v1/vpc`
+
+```json
+{
+    "vpc_type": "b",
+    "cidr_block": "10.144.0.0",
+    "subnet_mask": 17,
+    "ephemeral": true
+}
+```
 
 ## VPC Types
 
@@ -61,8 +77,10 @@ You can create an `A` type with any of the following VPC Subnet masks.
 | Ephemeral  | 10.144.12.0/22 |                  |                 |
 
 ### Type B
+
 The `B` type is laid out over 2 availbility zones.
 
+There are reasons you may only want two availability zones.  The most obvious reason is that there are that some regions only have two availability zones.  Another reason may be focused around costs.  While you are not being billed for extra subnets, if your VPC has NAT gateways in each availability zone you will certainly be paying for those.
 
 #### Subnet Mask
 
