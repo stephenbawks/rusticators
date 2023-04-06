@@ -3,7 +3,7 @@
 - [API](#api)
   - [Base API URL](#base-api-url)
 - [VPC's](#vpcs)
-  - [Body](#body)
+  - [Generating VPC Layout](#generating-vpc-layout)
   - [VPC Types](#vpc-types)
     - [Type A](#type-a)
       - [Subnet Mask](#subnet-mask)
@@ -29,11 +29,18 @@ There are a few different layouts that I have found to work well.  The catch wit
 
 Typically I generally reccomend a VPC with three availability zones, however there are a few locations where three is not possible.  I have also included a VPC layout that is built around 2 availability zones.
 
-## Body
+## Generating VPC Layout
 
 When requesting a VPC layout you just need to make sure that you are sending a `POST` request to the VPC endpoint. You also just need to pass in the required variables to have it generate you a layout. You can use the example below and amend it as needed.
 
 - URL: `https://api.rusticators.dev/v1/vpc`
+
+| Variables     | Required |
+|---------------|----------|
+| `vpc_type`    | Yes      |
+| `cidr_block`  | Yes      |
+| `subnet_mask` | Yes      |
+| `ephemeral`   | No       |
 
 ```json
 {
@@ -47,6 +54,8 @@ When requesting a VPC layout you just need to make sure that you are sending a `
 ## VPC Types
 
 You can generate VPC Types of `A` and `B` at the moment but more can be added easily if need be.
+
+Check out the [VPC Types page](/docs/vpc_layouts.md) for more details on each?
 
 ### Type A
 This VPC is my most generally prescribed layout.  It is laid out over three availability zones and offers what I feel is the most protection in case of outages.

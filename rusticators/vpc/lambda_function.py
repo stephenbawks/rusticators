@@ -2,7 +2,7 @@ import json
 
 from aws_lambda_powertools import Logger, Tracer
 from aws_lambda_powertools.event_handler import (
-    APIGatewayHttpResolver,
+    APIGatewayRestResolver,
     Response,
     content_types,
 )
@@ -14,7 +14,7 @@ from utilities.vpc import generate_vpc
 
 tracer = Tracer()
 logger = Logger()
-app = APIGatewayHttpResolver()
+app = APIGatewayRestResolver(strip_prefixes=["/v1"])
 
 
 @app.not_found
@@ -37,7 +37,7 @@ def handle_not_found_errors(exc: NotFoundError) -> Response:
     )
 
 
-@app.post("/vpc")
+@app.post("/vpc", compress=True)
 def calculate_vpc() -> dict:
     """
     Calculate a VPC.
@@ -67,7 +67,7 @@ def calculate_vpc() -> dict:
     )
 
 
-@app.get("/region/<path_region>")
+@app.get("/region/<path_region>", compress=True)
 def lookup_region_azs(path_region: str) -> dict:
     """
     Lookup the AZs for a region.
@@ -87,7 +87,7 @@ def lookup_region_azs(path_region: str) -> dict:
 
 
 @tracer.capture_lambda_handler
-@logger.inject_lambda_context(correlation_id_path=correlation_paths.API_GATEWAY_HTTP)
+@logger.inject_lambda_context(correlation_id_path=correlation_paths.API_GATEWAY_REST)
 def lambda_handler(event: dict, context: LambdaContext) -> dict:
     # when setting POWERTOOLS_LOGGER_SAMPLE_RATE env var
     # logger will only log what's defined in the sample rate

@@ -105,6 +105,9 @@ restApi = aws.apigateway.RestApi(
     f"{stack_name}-rest-api",
     name = f"{stack_name}-rest-api",
     description = "Rusticators REST API",
+    endpoint_configuration=aws.apigateway.RestApiEndpointConfigurationArgs(
+        types="EDGE"
+    ),
 )
 
 restApiLogs = aws.cloudwatch.LogGroup(
@@ -189,36 +192,48 @@ rest_stage = aws.apigateway.Stage(
     # cache_cluster_size="0.5",
     opts=pulumi.ResourceOptions(parent=rest_deployment)
 )
-# restDomainName = aws.apigateway.DomainName(
-#     f"{stack_name}-rest-domain-name",
-#     domain_name = api_domain_name,
-#     certificate_arn=certificate_arn,
-#     security_policy="TLS_1_2",
-# )
 
-# restBasePathMapping = aws.apigateway.BasePathMapping(
-#     f"{stack_name}-rest-base-path-mapping",
-#     rest_api = restApi.id,
-#     domain_name = restDomainName.id,
-#     base_path = "v1",
-# )
+aws.lambda_.Permission(
+    "rest-api-invoke-vpc-lambda-permission",
+    action = "lambda:InvokeFunction",
+    function = vpc_function.name,
+    principal = "apigateway.amazonaws.com",
+    source_arn = restApi.execution_arn.apply(lambda execution_arn: f"{execution_arn}/*"),
+    opts = pulumi.ResourceOptions(parent=region_integration, depends_on=[region_integration, rest_stage])
+)
+
+restDomainName = aws.apigateway.DomainName(
+    f"{stack_name}-rest-domain-name",
+    domain_name = api_domain_name,
+    certificate_arn=certificate_arn,
+    security_policy="TLS_1_2",
+    opts=pulumi.ResourceOptions(depends_on=[restApi, rest_stage])
+)
+
+restBasePathMapping = aws.apigateway.BasePathMapping(
+    f"{stack_name}-rest-base-path-mapping",
+    rest_api = restApi.id,
+    domain_name = restDomainName.id,
+    base_path = "v1",
+    stage_name=rest_stage.stage_name,
+)
 
 # https://www.pulumi.com/registry/packages/aws/api-docs/route53/record/
-# aws.route53.Record(
-#     f"{stack_name}-route-record",
-#     name = restDomainName,
-#     type = "A",
-#     zone_id = route_53_zone_id,
-#     aliases = [aws.route53.RecordAliasArgs(
-#         name = restDomainName.regional_domain_name,
-#         zone_id = restDomainName.cloudfront_zone_id,
-#         evaluate_target_health = False,
-#     )],
-#     opts=pulumi.ResourceOptions(
-#         depends_on=[restBasePathMapping, restDomainName],
-#         parent=restBasePathMapping
-#     )
-# )
+aws.route53.Record(
+    "rest-api-route-record",
+    name = restDomainName,
+    type = "A",
+    zone_id = route_53_zone_id,
+    aliases = [aws.route53.RecordAliasArgs(
+        name = restDomainName.cloudfront_domain_name,
+        zone_id = restDomainName.cloudfront_zone_id,
+        evaluate_target_health = False,
+    )],
+    opts=pulumi.ResourceOptions(
+        depends_on=[restBasePathMapping, restDomainName],
+        parent=restBasePathMapping
+    )
+)
 
 
 # ------------------------------------------------------------------------------------
@@ -298,40 +313,40 @@ aws.apigatewayv2.Route(
 # https://www.pulumi.com/registry/packages/aws/api-docs/cognito
 # ------------------------------------------------------------------------------------
 
-httpDomainName = aws.apigatewayv2.DomainName(
-    f"{stack_name}-domain",
-    domain_name = api_domain_name,
-    domain_name_configuration = aws.apigatewayv2.DomainNameDomainNameConfigurationArgs(
-        certificate_arn = certificate_arn,
-        endpoint_type = "REGIONAL",
-        security_policy = "TLS_1_2",
-    )
-)
+# httpDomainName = aws.apigatewayv2.DomainName(
+#     f"{stack_name}-domain",
+#     domain_name = api_domain_name,
+#     domain_name_configuration = aws.apigatewayv2.DomainNameDomainNameConfigurationArgs(
+#         certificate_arn = certificate_arn,
+#         endpoint_type = "REGIONAL",
+#         security_policy = "TLS_1_2",
+#     )
+# )
 
-domain_name_mapping_v1 = aws.apigatewayv2.ApiMapping(
-    f"{stack_name}-v1-mapping",
-    api_id = httpApi.id,
-    domain_name = httpDomainName,
-    api_mapping_key="v1",
-    stage = httpApiStage.id
-)
+# domain_name_mapping_v1 = aws.apigatewayv2.ApiMapping(
+#     f"{stack_name}-v1-mapping",
+#     api_id = httpApi.id,
+#     domain_name = httpDomainName,
+#     api_mapping_key="v1",
+#     stage = httpApiStage.id
+# )
 
-# https://www.pulumi.com/registry/packages/aws/api-docs/route53/record/
-aws.route53.Record(
-    f"{stack_name}-route-record",
-    name = httpDomainName,
-    type = "A",
-    zone_id = route_53_zone_id,
-    aliases = [aws.route53.RecordAliasArgs(
-        name = httpDomainName.domain_name_configuration.target_domain_name,
-        zone_id = httpDomainName.domain_name_configuration.hosted_zone_id,
-        evaluate_target_health = False,
-    )],
-    opts=pulumi.ResourceOptions(
-        depends_on=[domain_name_mapping_v1],
-        parent=domain_name_mapping_v1
-    )
-)
+# # https://www.pulumi.com/registry/packages/aws/api-docs/route53/record/
+# aws.route53.Record(
+#     f"{stack_name}-route-record",
+#     name = httpDomainName,
+#     type = "A",
+#     zone_id = route_53_zone_id,
+#     aliases = [aws.route53.RecordAliasArgs(
+#         name = httpDomainName.domain_name_configuration.target_domain_name,
+#         zone_id = httpDomainName.domain_name_configuration.hosted_zone_id,
+#         evaluate_target_health = False,
+#     )],
+#     opts=pulumi.ResourceOptions(
+#         depends_on=[domain_name_mapping_v1],
+#         parent=domain_name_mapping_v1
+#     )
+# )
 
 # ------------------------------------------------------------------------------------
 # Exports
@@ -339,5 +354,5 @@ aws.route53.Record(
 
 pulumi.export("httpApi", httpApi.execution_arn)
 pulumi.export("httpApiStage", httpApiStage.name)
-pulumi.export("httpApiMappingV1", domain_name_mapping_v1.api_mapping_key)
-pulumi.export("httpDomainName", httpDomainName.domain_name)
+# pulumi.export("httpApiMappingV1", domain_name_mapping_v1.api_mapping_key)
+# pulumi.export("httpDomainName", httpDomainName.domain_name)

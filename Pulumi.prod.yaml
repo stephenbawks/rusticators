@@ -7,4 +7,4 @@ config:
   rusticators:log_level: INFO
   rusticators:powertools_layer: arn:aws:lambda:us-east-2:017000801446:layer:AWSLambdaPowertoolsPythonV2-Arm64:23
   rusticators:route_53_zone: Z0095259WE7FOON4F5GP
-  rusticators:certificate_arn: arn:aws:acm:us-east-2:547201116507:certificate/9f66dd53-54a9-427d-a534-e2b597087a6d
+  rusticators:certificate_arn: arn:aws:acm:us-east-1:547201116507:certificate/6ad78cea-0652-4f4e-a5ab-f54d472239c8
