@@ -156,9 +156,10 @@ You can create an `B` type with any of the following VPC Subnet masks.
 
 ## Using VPC Layout in IAC
 
-One thing I have run into many times before is trying to do a bunch of conditional logic in Terraform.   Not saying it cannot be done, but depending on what you are trying to do it sometimes feels like a square-peg-round-hole situation.
+One thing I have run into many times before is trying to do a bunch of conditional logic in Terraform.   Not saying it cannot be done, but depending on what you are trying to do it often feels like I am trying to fit a square-peg into a round-hole.
 
-That being said, I sat down and wondered if there might not be a way I can just pull all the logic out of just make it much simplier and move the logic somewhere else.  Yes, I suppose I am just moving the problem somewhere else, but I think it is a better place.  Its also someplace where I can use a real programming language and handle changes and versions much nicer.
+That being said, I sat down and wondered if there might not be a way I can just pull all the logic out of just make it much simplier and move the logic somewhere else.  Yes, I suppose I am just moving the problem somewhere else, but I think it is a better place.  It i also where I can use a real programming language and handle changes and versions much nicer.
+
 
 ### Terraform
 
@@ -178,7 +179,6 @@ data "http" "vpc_layout" {
 resource "aws_vpc" "main" {
   cidr_block = "${var.cidr_block}/${var.subnet_mask}"
 }
-
 
 resource "aws_subnet" "public_subnets" {
   for_each   = toset(jsondecode(data.http.vpc_layout.response_body).public)
