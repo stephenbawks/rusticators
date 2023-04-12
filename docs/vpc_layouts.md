@@ -13,6 +13,16 @@
 
 You can generate VPC Types of `A` and `B` at the moment but more can be added easily if need be.
 
+---
+**Ephemeral Subnet**
+
+First off, the ephemeral subnet is completely optional. You don't need to use it.
+
+Both `A` and `B` types have an ephemeral subnet option.  This subnet is used for instances that are short lived and don't need to be persistent. This subnet was added because there is "extra" subnet space that is available in the VPC as CIDR math does not always perfectly divide the VPC into equal parts.  Being that there is only one ephermal subnet this subnet is not used for anything other than short lived instances.  A classic example has always been for a jumpbox or bastion host.
+
+---
+
+
 ### Type A
 
 This VPC is my most generally prescribed layout.  It is laid out over three availability zones and offers what I feel is the most protection in case of outages.
@@ -88,6 +98,61 @@ There are reasons you may only want two availability zones.  The most obvious re
 You can create an `B` type with any of the following VPC Subnet masks.
 
 - 16, 17, 18, 19, 20, 21, 22, 23, 24
+
+
+| /16        | AZ 1           | AZ 2             |
+|------------|----------------|------------------|
+| Public     | 10.144.0.0/19  | 10.144.32.0/19   |
+| Private    | 10.144.128.0/18| 10.144.192.0/18  |
+| Ephemeral  | 10.144.64.0/19 |                  |
+
+| /17        | AZ 1           | AZ 2             |
+|------------|----------------|------------------|
+| Public     | 10.144.0.0/20  | 10.144.16.0/20   |
+| Private    | 10.144.64.0/19 | 10.144.96.0/19   |
+| Ephemeral  | 10.144.32.0/20 |                  |
+
+| /18        | AZ 1           | AZ 2             |
+|------------|----------------|------------------|
+| Public     | 10.144.0.0/21  | 10.144.8.0/21    |
+| Private    | 10.144.32.0/20 | 10.144.48.0/20   |
+| Ephemeral  | 10.144.16.0/21 |                  |
+
+| /19        | AZ 1           | AZ 2             |
+|------------|----------------|------------------|
+| Public     | 10.144.0.0/22  | 10.144.4.0/22    |
+| Private    | 10.144.16.0/21 | 10.144.24.0/21   |
+| Ephemeral  | 10.144.8.0/22  |                  |
+
+| /20        | AZ 1           | AZ 2             |
+|------------|----------------|------------------|
+| Public     | 10.144.0.0/23  | 10.144.2.0/23    |
+| Private    | 10.144.8.0/22  | 10.144.12.0/22   |
+| Ephemeral  | 10.144.4.0/23  |                  |
+
+| /21        | AZ 1           | AZ 2             |
+|------------|----------------|------------------|
+| Public     | 10.144.0.0/24  | 10.144.1.0/24    |
+| Private    | 10.144.4.0/23  | 10.144.6.0/23    |
+| Ephemeral  | 10.144.2.0/24  |                  |
+
+| /22        | AZ 1           | AZ 2             |
+|------------|----------------|------------------|
+| Public     | 10.144.0.0/25  | 10.144.0.128/25  |
+| Private    | 10.144.2.0/24  | 10.144.3.0/24    |
+| Ephemeral  | 10.144.2.0/25  |                  |
+
+| /23        | AZ 1           | AZ 2             |
+|------------|----------------|------------------|
+| Public     | 10.144.0.0/26  | 10.144.0.64/26   |
+| Private    | 10.144.1.0/25  | 10.144.1.128/25  |
+| Ephemeral  | 10.144.0.128/26|                  |
+
+| /24        | AZ 1           | AZ 2             |
+|------------|----------------|------------------|
+| Public     | 10.144.0.0/27  | 10.144.0.32/27   |
+| Private    | 10.144.0.128/26| 10.144.0.192/26  |
+| Ephemeral  | 10.144.0.64/27 |                  |
 
 ## Using VPC Layout in IAC
 
