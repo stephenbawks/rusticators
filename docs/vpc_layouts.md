@@ -15,6 +15,7 @@
 You can generate VPC Types of `A` and `B` at the moment but more can be added easily if need be.
 
 > **Note**
+>
 > All the VPC layouts are based on the CIDR block of `10.144.0.0` however you can change this to any CIDR block you want.
 
 ### Ephemeral Subnet
