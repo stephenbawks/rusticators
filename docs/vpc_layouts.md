@@ -163,6 +163,53 @@ That being said, I sat down and wondered if there might not be a way I can just 
 ### Terraform
 
 ```hcl
+data "http" "vpc_layout" {
+  url    = "https://api.rusticators.dev/v1/vpc"
+  method = "POST"
+
+  request_body = jsonencode({
+    "vpc_type"    = var.vpc_type,
+    "cidr_block"  = var.cidr_block,
+    "subnet_mask" = var.subnet_mask,
+    "ephemeral"   = var.ephemeral_subnet
+  })
+}
+
+resource "aws_vpc" "main" {
+  cidr_block = "${var.cidr_block}/${var.subnet_mask}"
+}
+
+
+resource "aws_subnet" "public_subnets" {
+  for_each   = toset(jsondecode(data.http.vpc_layout.response_body).public)
+  vpc_id     = aws_vpc.main.id
+  cidr_block = each.value
+}
+
+resource "aws_subnet" "private_subnets" {
+  for_each   = toset(jsondecode(data.http.vpc_layout.response_body).private)
+  vpc_id     = aws_vpc.main.id
+  cidr_block = each.value
+}
+
+resource "aws_subnet" "private_subnets" {
+  for_each   = toset(jsondecode(data.http.vpc_layout.response_body).private)
+  vpc_id     = aws_vpc.main.id
+  cidr_block = each.value
+}
+
+resource "aws_subnet" "ephemeral_subnet" {
+  count      = var.ephemeral_subnet ? 1 : 0
+  for_each   = toset(jsondecode(data.http.vpc_layout.response_body).ephemeral)
+  vpc_id     = aws_vpc.main.id
+  cidr_block = each.value
+}
+
+
+# output "name" {
+#   value = jsondecode(data.http.vpc_layout.response_body).public
+# }
+
 
 ```
 
