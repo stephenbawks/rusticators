@@ -5,6 +5,8 @@
       - [Subnet Mask](#subnet-mask)
     - [Type B](#type-b)
       - [Subnet Mask](#subnet-mask-1)
+  - [Using VPC Layout in IAC](#using-vpc-layout-in-iac)
+    - [Terraform](#terraform)
 
 
 ## VPC Types
@@ -86,3 +88,16 @@ There are reasons you may only want two availability zones.  The most obvious re
 You can create an `B` type with any of the following VPC Subnet masks.
 
 - 16, 17, 18, 19, 20, 21, 22, 23, 24
+
+## Using VPC Layout in IAC
+
+One thing I have run into many times before is trying to do a bunch of conditional logic in Terraform.   Not saying it cannot be done, but depending on what you are trying to do it sometimes feels like a square-peg-round-hole situation.
+
+That being said, I sat down and wondered if there might not be a way I can just pull all the logic out of just make it much simplier and move the logic somewhere else.  Yes, I suppose I am just moving the problem somewhere else, but I think it is a better place.  Its also someplace where I can use a real programming language and handle changes and versions much nicer.
+
+### Terraform
+
+```hcl
+
+```
+

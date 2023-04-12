@@ -22,6 +22,10 @@ pulumi-aws-native = "^0.53.0"
 pulumi-aws = "^5.31.0"
 boto3 = "^1.26.91"
 pytest = "^7.2.2"
+mike = "^1.1.2"
+pymdown-extensions = "^9.11"
+mkdocs-material = "^9.1.6"
+mkdocs-git-revision-date-plugin = "^0.3.2"
 
 [build-system]
 requires = ["poetry-core"]
