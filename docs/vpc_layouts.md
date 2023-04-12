@@ -14,8 +14,11 @@
 
 You can generate VPC Types of `A` and `B` at the moment but more can be added easily if need be.
 
+> **Note**
+> All the VPC layouts are based on the CIDR block of `10.144.0.0` however you can change this to any CIDR block you want.
+
 ### Ephemeral Subnet
-First off, the ephemeral subnet is completely optional. You don't need to use it.
+First off, the ephemeral subnet is completely optional. You do not need to use it.
 
 Both `A` and `B` types have an ephemeral subnet option.  This subnet is used for instances that are short lived and don't need to be persistent. This subnet was added because there is "extra" subnet space that is available in the VPC as CIDR math does not always perfectly divide the VPC into equal parts.  Being that there is only one ephermal subnet this subnet is not used for anything other than short lived instances.  A classic example has always been for a jumpbox or bastion host.
 
