@@ -3,10 +3,10 @@
 - [API](#api)
   - [Base API URL](#base-api-url)
 - [VPC's](#vpcs)
+  - [VPC Types](#vpc-types)
   - [Generating VPC Layout](#generating-vpc-layout)
     - [Example Request](#example-request)
     - [Example Response](#example-response)
-  - [VPC Types](#vpc-types)
   - [Using VPC Layout in IAC](#using-vpc-layout-in-iac)
 
 
@@ -27,6 +27,12 @@ VPC layouts and subnetting can be difficult.  Created this years ago and wanted 
 There are a few different layouts that I have found to work well.  The catch with subnet math is that most of the time it does not play well with being able to use the full amount of IP space.  Add in the fact that each subnet in AWS has an overhead of 5 IPs that are unuseable as they are reservered for AWS networking reasons. There is a little trade-off or balance between trying to achieve the most amount of unsable space while also providing a VPC layout that offers up some protection for "blast radius" and general high availability best practices.
 
 Typically I generally reccomend a VPC with three availability zones, however there are a few locations where three is not possible.  I have also included a VPC layout that is built around 2 availability zones.
+
+## VPC Types
+
+You can generate VPC Types of `A` and `B` at the moment but more can be added easily if need be.
+
+Check out the [VPC Types page](/docs/vpc_layouts.md) for more details on each of the VPC types.
 
 ## Generating VPC Layout
 
@@ -69,12 +75,6 @@ When requesting a VPC layout you just need to make sure that you are sending a `
     ]
 }
 ```
-
-## VPC Types
-
-You can generate VPC Types of `A` and `B` at the moment but more can be added easily if need be.
-
-Check out the [VPC Types page](/docs/vpc_layouts.md) for more details on each of the VPC types.
 
 ## Using VPC Layout in IAC
 
