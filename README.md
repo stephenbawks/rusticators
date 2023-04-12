@@ -3,8 +3,10 @@
 - [API](#api)
   - [Base API URL](#base-api-url)
 - [VPC's](#vpcs)
-  - [Generating VPC Layout](#generating-vpc-layout)
   - [VPC Types](#vpc-types)
+  - [Generating VPC Layout](#generating-vpc-layout)
+    - [Example Request](#example-request)
+    - [Example Response](#example-response)
   - [Using VPC Layout in IAC](#using-vpc-layout-in-iac)
 
 
@@ -26,11 +28,17 @@ There are a few different layouts that I have found to work well.  The catch wit
 
 Typically I generally reccomend a VPC with three availability zones, however there are a few locations where three is not possible.  I have also included a VPC layout that is built around 2 availability zones.
 
+## VPC Types
+
+You can generate VPC Types of `A` and `B` at the moment but more can be added easily if need be.
+
+Check out the [VPC Types page](/docs/vpc_layouts.md) for more details on each of the VPC types.
+
 ## Generating VPC Layout
 
 When requesting a VPC layout you just need to make sure that you are sending a `POST` request to the VPC endpoint. You also just need to pass in the required variables to have it generate you a layout. You can use the example below and amend it as needed.
 
-- URL: `https://api.rusticators.dev/v1/vpc`
+- POST: `https://api.rusticators.dev/v1/vpc`
 
 | Variables     | Required |
 |---------------|----------|
@@ -39,6 +47,7 @@ When requesting a VPC layout you just need to make sure that you are sending a `
 | `subnet_mask` | Yes      |
 | `ephemeral`   | No       |
 
+### Example Request
 ```json
 {
     "vpc_type": "b",
@@ -48,11 +57,24 @@ When requesting a VPC layout you just need to make sure that you are sending a `
 }
 ```
 
-## VPC Types
-
-You can generate VPC Types of `A` and `B` at the moment but more can be added easily if need be.
-
-Check out the [VPC Types page](/docs/vpc_layouts.md) for more details on each?
+### Example Response
+```json
+{
+    "public": [
+        "10.144.0.0/21",
+        "10.144.8.0/21",
+        "10.144.16.0/21"
+    ],
+    "private": [
+        "10.144.32.0/19",
+        "10.144.64.0/19",
+        "10.144.96.0/19"
+    ],
+    "ephemeral": [
+        "10.144.24.0/21"
+    ]
+}
+```
 
 ## Using VPC Layout in IAC
 
