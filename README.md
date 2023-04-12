@@ -4,6 +4,8 @@
   - [Base API URL](#base-api-url)
 - [VPC's](#vpcs)
   - [Generating VPC Layout](#generating-vpc-layout)
+    - [Example Request](#example-request)
+    - [Example Response](#example-response)
   - [VPC Types](#vpc-types)
   - [Using VPC Layout in IAC](#using-vpc-layout-in-iac)
 
@@ -30,7 +32,7 @@ Typically I generally reccomend a VPC with three availability zones, however the
 
 When requesting a VPC layout you just need to make sure that you are sending a `POST` request to the VPC endpoint. You also just need to pass in the required variables to have it generate you a layout. You can use the example below and amend it as needed.
 
-- URL: `https://api.rusticators.dev/v1/vpc`
+- POST: `https://api.rusticators.dev/v1/vpc`
 
 | Variables     | Required |
 |---------------|----------|
@@ -39,12 +41,32 @@ When requesting a VPC layout you just need to make sure that you are sending a `
 | `subnet_mask` | Yes      |
 | `ephemeral`   | No       |
 
+### Example Request
 ```json
 {
     "vpc_type": "b",
     "cidr_block": "10.144.0.0",
     "subnet_mask": 17,
     "ephemeral": true
+}
+```
+
+### Example Response
+```json
+{
+    "public": [
+        "10.144.0.0/21",
+        "10.144.8.0/21",
+        "10.144.16.0/21"
+    ],
+    "private": [
+        "10.144.32.0/19",
+        "10.144.64.0/19",
+        "10.144.96.0/19"
+    ],
+    "ephemeral": [
+        "10.144.24.0/21"
+    ]
 }
 ```
 
