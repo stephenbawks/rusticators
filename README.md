@@ -74,7 +74,7 @@ When requesting a VPC layout you just need to make sure that you are sending a `
 
 You can generate VPC Types of `A` and `B` at the moment but more can be added easily if need be.
 
-Check out the [VPC Types page](/docs/vpc_layouts.md) for more details on each?
+Check out the [VPC Types page](/docs/vpc_layouts.md) for more details on each of the VPC types.
 
 ## Using VPC Layout in IAC
 
