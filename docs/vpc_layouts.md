@@ -204,12 +204,4 @@ resource "aws_subnet" "ephemeral_subnet" {
   vpc_id     = aws_vpc.main.id
   cidr_block = each.value
 }
-
-
-# output "name" {
-#   value = jsondecode(data.http.vpc_layout.response_body).public
-# }
-
-
 ```
-
