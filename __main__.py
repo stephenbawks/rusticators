@@ -5,7 +5,7 @@ import json
 import pulumi
 import pulumi_aws as aws
 import pulumi_aws_native as aws_native
-# import pulumi_docker as docker
+import pulumi_docker as docker
 
 
 # ----------------------------------------------------------------
@@ -27,6 +27,35 @@ lambda_log_level = config.get("log_level")
 api_domain_name = config.require("api_domain_name")
 certificate_arn = config.require("certificate_arn")
 route_53_zone_id = config.require("route_53_zone")
+
+
+
+# ecr_repo = aws_native.ecr.Repository(
+#     "ecr_repo",
+#     repository_name=f"{stack_name}-vpc",
+#     image_tag_mutability="IMMUTABLE",
+#     image_scanning_configuration=aws.ecr.RepositoryImageScanningConfigurationArgs(
+#         scan_on_push=True
+#     ),
+# )
+
+# ecr_token = aws.ecr.get_authorization_token()
+
+# build_container = docker.Image(
+#     "build_container",
+#     image_name=ecr_repo.repository_uri,
+#     build={
+#         "dockerfile": "./temp/Dockerfile",
+#         "platform": "linux/arm64",
+#     },
+#     registry={
+#         "server": ecr_repo.repository_uri.apply(lambda uri: uri.split("/")[0]),
+#         "username": ecr_token.user_name,
+#         "password": ecr_token.password,
+#     },
+#     opts=pulumi.ResourceOptions(parent=ecr_repo)
+# )
+
 
 # ------------------------------------------------------------------------------------
 # Lambda Function
@@ -79,7 +108,7 @@ vpc_function = aws.lambda_.Function(
     memory_size = lambda_memory,
     role = vpc_lambda_role.arn,
     timeout = 10,
-    runtime="python3.9",
+    runtime="python3.10",
     code = pulumi.FileArchive("./rusticators/vpc"),
     layers = [
         powertools_layer
@@ -96,6 +125,7 @@ vpc_function = aws.lambda_.Function(
     ),
     opts=pulumi.ResourceOptions(delete_before_replace=False)
 )
+
 
 # ------------------------------------------------------------------------------------
 # REST API Gateway
