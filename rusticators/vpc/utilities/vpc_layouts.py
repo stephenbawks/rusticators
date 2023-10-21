@@ -13,6 +13,7 @@ def get_vpc_layout(vpc_type: str) -> dict:
                 "block_size": 4,
                 "number": [3],
             },
+            "ip_type": "ipv4",
         },
         "b": {
             "public": {
@@ -27,6 +28,22 @@ def get_vpc_layout(vpc_type: str) -> dict:
                 "block_size": 3,
                 "number": [2],
             },
+            "ip_type": "ipv4",
+        },
+        "s": {
+            "public": {
+                "block_size": 8,
+                "number": [0, 1, 2, 3],
+            },
+            "private": {
+                "block_size": 8,
+                "number": [4, 5, 6, 7],
+            },
+            "ephemeral": {
+                "block_size": 8,
+                "number": [8],
+            },
+            "ip_type": "ipv6",
         },
     }
 

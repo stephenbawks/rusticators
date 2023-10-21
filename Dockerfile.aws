@@ -1,0 +1,11 @@
+FROM public.ecr.aws/lambda/python:3.11
+
+COPY poetry.lock pyproject.toml ./
+
+RUN pip3 install poetry
+
+RUN poetry install --only container
+
+COPY ./rusticators/vpc ${LAMBDA_TASK_ROOT}
+
+CMD ["lambda_function.lambda_handler"]

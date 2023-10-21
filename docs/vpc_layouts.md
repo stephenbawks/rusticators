@@ -6,6 +6,8 @@
       - [Subnet Mask](#subnet-mask)
     - [Type B](#type-b)
       - [Subnet Mask](#subnet-mask-1)
+    - [Type S](#type-s)
+      - [Subnet Mask](#subnet-mask-2)
   - [Using VPC Layout in IAC](#using-vpc-layout-in-iac)
     - [Terraform](#terraform)
 
@@ -153,6 +155,29 @@ You can create an `B` type with any of the following VPC Subnet masks.
 | Public     | 10.144.0.0/27  | 10.144.0.32/27   |
 | Private    | 10.144.0.128/26| 10.144.0.192/26  |
 | Ephemeral  | 10.144.0.64/27 |                  |
+
+### Type S
+
+The `S` type is a IPv6 layout and will hand back 4 subnets each for public and private. An AWS VPC subnet's IPv6 CIDR block is a fixed prefix length of /64 so that is what will be handed back.
+
+
+#### Subnet Mask
+
+You can create an `S` type with any of the following VPC Subnet masks. If you are using an AWS IPv6 assigned CIDR range it will be assigned from their pool of IPv6 addresses.
+
+  * The CIDR block is a fixed prefix length of /56.
+  * A subnet's IPv6 CIDR block is a fixed prefix length of /64.
+
+For example, you create a VPC and specify that you want to associate an Amazon-provided IPv6 CIDR block with the VPC. Amazon assigns the following IPv6 CIDR block to your VPC: 2001:db8:1234:1a00::/56. You cannot choose the range of IP addresses yourself. You can create a subnet and associate an IPv6 CIDR block from this range; for example, 2001:db8:1234:1a00::/64.
+
+- 56
+
+| /56        | AZ 1                      | AZ 2                      | AZ 3                      | AZ 4             |
+|------------|---------------------------|---------------------------|---------------------------|----------------------------|
+| Public     | 2600:1f16:1702:1000::/64  | 2600:1f16:1702:1001::/64  | 2600:1f16:1702:1002::/64  | 2600:1f16:1702:1003::/64   |
+| Private    | 2600:1f16:1702:1004::/64  | 2600:1f16:1702:1005::/64  | 2600:1f16:1702:1006::/64  | 2600:1f16:1702:1007::/64    |
+| Ephemeral  | 2600:1f16:1702:1008::/64  |                  |
+
 
 ## Using VPC Layout in IAC
 
