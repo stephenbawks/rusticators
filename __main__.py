@@ -55,8 +55,7 @@ life_cycle_policy = json.dumps({
 # https://www.pulumi.com/registry/packages/aws-native/api-docs/ecr/repository/
 ecr_repo = aws_native.ecr.Repository(
     "ecr_repo",
-    repository_name=f"{stack_name}-vpc",
-    image_tag_mutability="IMMUTABLE",
+    # repository_name=f"{stack_name}-vpc",
     image_scanning_configuration=aws.ecr.RepositoryImageScanningConfigurationArgs(
         scan_on_push=True
     ),
@@ -68,25 +67,25 @@ ecr_repo = aws_native.ecr.Repository(
 ecr_token = aws.ecr.get_authorization_token()
 
 # https://www.pulumi.com/registry/packages/docker/api-docs/image/
-build_container = docker.Image(
-    "build_container",
-    image_name=ecr_repo.repository_uri,
-    build=docker.DockerBuildArgs(
-        args={
-            "BUILDKIT_INLINE_CACHE": "1",
-        },
-        builder_version="BuilderBuildKit",
-        context=".",
-        dockerfile="Dockerfile.aws",
-        platform="linux/arm64",
-    ),
-    registry={
-        "server": ecr_repo.repository_uri.apply(lambda uri: uri.split("/")[0]),
-        "username": ecr_token.user_name,
-        "password": ecr_token.password,
-    },
-    opts=pulumi.ResourceOptions(parent=ecr_repo)
-)
+# build_container = docker.Image(
+#     "build_container",
+#     image_name=f"{ecr_repo.repository_uri}:asdfasdfasd",
+#     build=docker.DockerBuildArgs(
+#         args={
+#             "BUILDKIT_INLINE_CACHE": "1",
+#         },
+#         builder_version="BuilderBuildKit",
+#         context=".",
+#         dockerfile="Dockerfile.aws",
+#         platform="linux/arm64",
+#     ),
+#     registry=docker.RegistryArgs(
+#         username=ecr_token.user_name,
+#         password=pulumi.Output.secret(ecr_token.password),
+#         server=ecr_repo.urn,
+#     ),
+#     opts=pulumi.ResourceOptions(parent=ecr_repo)
+# )
 
 api_log_settings = {
     "requestId":"$context.requestId", "ip": "$context.identity.sourceIp", "requestTime":"$context.requestTime",
