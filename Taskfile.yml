@@ -24,7 +24,28 @@ tasks:
     cmds:
       - poetry run ruff check ./rusticators/vpc
 
+  prerelease:
+    cmds:
+      - task: lint
+      - task: security
+      - task: mypy
+
+  build_container:
+    vars:
+      ECR_REPO: '{{.ECR_REPO}}'
+      ACCOUNT_ID: '{{.ACCOUNT_ID}}'
+      REGION: '{{default "us-east-2" .REGION}}'
+    cmds:
+      - docker build -t rusticators-vpc -f ./Dockerfile.aws .
+      - docker tag rusticators-vpc:latest {{.ACCOUNT_ID}}.dkr.ecr.{{.REGION}}.amazonaws.com/{{.ECR_REPO}}:{{.CLI_ARGS}}
+      - docker push {{.ACCOUNT_ID}}.dkr.ecr.{{.REGION}}.amazonaws.com/{{.ECR_REPO}}:{{.CLI_ARGS}}
+
+  containertest:
+    cmds:
+      - task: build_container
+        vars: { ECR_REPO: 'test-rusticators-vpc', ACCOUNT_ID: '547201116507' }
+
   deploy:
-    deps: [zip]
+    deps: [format, zip]
     cmds:
       - cmd: pulumi up

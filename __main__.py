@@ -53,16 +53,16 @@ life_cycle_policy = json.dumps({
 
 
 # https://www.pulumi.com/registry/packages/aws-native/api-docs/ecr/repository/
-# ecr_repo = aws_native.ecr.Repository(
-#     "ecr_repo",
-#     # repository_name=f"{stack_name}-vpc",
-#     image_scanning_configuration=aws.ecr.RepositoryImageScanningConfigurationArgs(
-#         scan_on_push=True
-#     ),
-#     lifecycle_policy=aws_native.ecr.RepositoryLifecyclePolicyArgs(
-#         lifecycle_policy_text=life_cycle_policy
-#     )
-# )
+ecr_repo = aws_native.ecr.Repository(
+    "ecr_repo",
+    repository_name=f"{stack_name}-vpc",
+    image_scanning_configuration=aws_native.ecr.RepositoryImageScanningConfigurationArgs(
+        scan_on_push=True,
+    ),
+    lifecycle_policy=aws_native.ecr.RepositoryLifecyclePolicyArgs(
+        lifecycle_policy_text=life_cycle_policy
+    )
+)
 
 # ecr_token = aws.ecr.get_authorization_token()
 

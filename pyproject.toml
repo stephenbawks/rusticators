@@ -29,6 +29,7 @@ bandit = "^1.7.5"
 
 [tool.poetry.group.container.dependencies]
 aws-lambda-powertools = "^2.21.0"
+cachetools = "^5.3.1"
 
 [build-system]
 requires = ["poetry-core"]
