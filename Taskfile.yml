@@ -23,3 +23,8 @@ tasks:
     deps: [format]
     cmds:
       - poetry run ruff check ./rusticators/vpc
+
+  deploy:
+    deps: [zip]
+    cmds:
+      - cmd: pulumi up
