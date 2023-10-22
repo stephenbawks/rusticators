@@ -46,6 +46,6 @@ tasks:
         vars: { ECR_REPO: 'test-rusticators-vpc', ACCOUNT_ID: '547201116507' }
 
   deploy:
-    deps: [format, zip]
+    deps: [zip]
     cmds:
       - cmd: pulumi up
