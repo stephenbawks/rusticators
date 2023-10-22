@@ -25,11 +25,16 @@ def generate_vpc(
         dict: VPC Layout
     """
 
-    supported_vpc_types = ["a", "b"]
-    supported_subnet_masks = [16, 17, 18, 19, 20, 21, 22, 23, 24]
+    supported_vpc_types = ["a", "b", "s"]
+
+    if vpc_type in {"a", "b"}:
+        supported_subnet_masks = [16, 17, 18, 19, 20, 21, 22, 23, 24]
+    elif vpc_type in {"s"}:
+        supported_subnet_masks = [56]
 
     if vpc_type not in supported_vpc_types:
         body = {"error": f"vpc_type must a string value of {supported_vpc_types}"}
+        print(body)
         return Response(
             status_code=400,
             content_type=content_types.APPLICATION_JSON,
@@ -40,6 +45,7 @@ def generate_vpc(
         body = {
             "error": f"subnet_mask must be an integer value of {supported_subnet_masks}"
         }
+        print(body)
         return Response(
             status_code=400,
             content_type=content_types.APPLICATION_JSON,

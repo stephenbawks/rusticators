@@ -30,7 +30,7 @@ Typically I generally reccomend a VPC with three availability zones, however the
 
 ## VPC Types
 
-You can generate VPC Types of `A` and `B` at the moment but more can be added easily if need be.
+You can generate VPC Types of `A`, `B` and `S` at the moment but more can be added easily if need be.
 
 Check out the [VPC Types page](/docs/vpc_layouts.md) for more details on each of the VPC types.
 

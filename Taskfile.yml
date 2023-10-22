@@ -1,0 +1,51 @@
+version: 3
+
+tasks:
+  zip:
+    cmds:
+      - cmd: pip3 install cachetools --target .\rusticators\vpc\
+        platforms: [windows]
+      - cmd: pwsh.exe -command "Compress-Archive .\rusticators\vpc\* -DestinationPath .\temp\vpc.zip -Force"
+        platforms: [windows]
+
+  format:
+    cmds:
+      - cmd: poetry run isort ./rusticators/vpc
+      - cmd: poetry run black ./rusticators/vpc
+
+  security:
+    cmd: poetry run bandit -r ./rusticators/vpc
+
+  mypy:
+    cmd: poetry run mypy --pretty ./rusticators/vpc
+
+  lint:
+    deps: [format]
+    cmds:
+      - poetry run ruff check ./rusticators/vpc
+
+  prerelease:
+    cmds:
+      - task: lint
+      - task: security
+      - task: mypy
+
+  build_container:
+    vars:
+      ECR_REPO: '{{.ECR_REPO}}'
+      ACCOUNT_ID: '{{.ACCOUNT_ID}}'
+      REGION: '{{default "us-east-2" .REGION}}'
+    cmds:
+      - docker build -t rusticators-vpc -f ./Dockerfile.aws .
+      - docker tag rusticators-vpc:latest {{.ACCOUNT_ID}}.dkr.ecr.{{.REGION}}.amazonaws.com/{{.ECR_REPO}}:{{.CLI_ARGS}}
+      - docker push {{.ACCOUNT_ID}}.dkr.ecr.{{.REGION}}.amazonaws.com/{{.ECR_REPO}}:{{.CLI_ARGS}}
+
+  containertest:
+    cmds:
+      - task: build_container
+        vars: { ECR_REPO: 'test-rusticators-vpc', ACCOUNT_ID: '547201116507' }
+
+  deploy:
+    deps: [zip]
+    cmds:
+      - cmd: pulumi up
