@@ -53,18 +53,18 @@ life_cycle_policy = json.dumps({
 
 
 # https://www.pulumi.com/registry/packages/aws-native/api-docs/ecr/repository/
-ecr_repo = aws_native.ecr.Repository(
-    "ecr_repo",
-    # repository_name=f"{stack_name}-vpc",
-    image_scanning_configuration=aws.ecr.RepositoryImageScanningConfigurationArgs(
-        scan_on_push=True
-    ),
-    lifecycle_policy=aws_native.ecr.RepositoryLifecyclePolicyArgs(
-        lifecycle_policy_text=life_cycle_policy
-    )
-)
+# ecr_repo = aws_native.ecr.Repository(
+#     "ecr_repo",
+#     # repository_name=f"{stack_name}-vpc",
+#     image_scanning_configuration=aws.ecr.RepositoryImageScanningConfigurationArgs(
+#         scan_on_push=True
+#     ),
+#     lifecycle_policy=aws_native.ecr.RepositoryLifecyclePolicyArgs(
+#         lifecycle_policy_text=life_cycle_policy
+#     )
+# )
 
-ecr_token = aws.ecr.get_authorization_token()
+# ecr_token = aws.ecr.get_authorization_token()
 
 # https://www.pulumi.com/registry/packages/docker/api-docs/image/
 # build_container = docker.Image(
@@ -141,6 +141,9 @@ aws.iam.RolePolicy(
     opts=pulumi.ResourceOptions(parent=vpc_lambda_role)
 )
 
+# file_asset = pulumi.FileAsset("./rusticators/vpc")
+vpc_archive = pulumi.FileArchive("./temp/vpc.zip")
+
 vpc_function = aws.lambda_.Function(
     "vpc-function",
     name = f"{stack_name}-vpc-layouts",
@@ -148,8 +151,8 @@ vpc_function = aws.lambda_.Function(
     memory_size = lambda_memory,
     role = vpc_lambda_role.arn,
     timeout = 10,
-    runtime="python3.10",
-    code = pulumi.FileArchive("./rusticators/vpc"),
+    runtime="python3.11",
+    code = vpc_archive,
     layers = [
         powertools_layer
     ],
@@ -449,4 +452,4 @@ aws.route53.Record(
 # pulumi.export("httpApiStage", httpApiStage.name)
 # pulumi.export("httpApiMappingV1", domain_name_mapping_v1.api_mapping_key)
 # pulumi.export("httpDomainName", httpDomainName.domain_name)
-pulumi.export("ecr_repo", ecr_repo.repository_uri)
+# pulumi.export("ecr_repo", ecr_repo.repository_uri)

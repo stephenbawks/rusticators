@@ -1,0 +1,25 @@
+version: 3
+
+tasks:
+  zip:
+    cmds:
+      - cmd: pip3 install cachetools --target .\rusticators\vpc\
+        platforms: [windows]
+      - cmd: pwsh.exe -command "Compress-Archive .\rusticators\vpc\* -DestinationPath .\temp\vpc.zip -Force"
+        platforms: [windows]
+
+  format:
+    cmds:
+      - cmd: poetry run isort ./rusticators/vpc
+      - cmd: poetry run black ./rusticators/vpc
+
+  security:
+    cmd: poetry run bandit -r ./rusticators/vpc
+
+  mypy:
+    cmd: poetry run mypy --pretty ./rusticators/vpc
+
+  lint:
+    deps: [format]
+    cmds:
+      - poetry run ruff check ./rusticators/vpc
