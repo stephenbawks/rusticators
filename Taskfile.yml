@@ -8,16 +8,15 @@ tasks:
       - cmd: pwsh.exe -command "Compress-Archive .\rusticators\vpc\* -DestinationPath .\temp\vpc.zip -Force"
         platforms: [windows]
 
-  format:
-    cmds:
-      - cmd: poetry run isort ./rusticators/vpc
-      - cmd: poetry run black ./rusticators/vpc
-
   security:
     cmd: poetry run bandit -r ./rusticators/vpc
 
   mypy:
     cmd: poetry run mypy --pretty ./rusticators/vpc
+
+  format:
+    cmds:
+      - cmd: poetry run ruff format ./rusticators/vpc
 
   lint:
     deps: [format]
@@ -35,10 +34,13 @@ tasks:
       ECR_REPO: '{{.ECR_REPO}}'
       ACCOUNT_ID: '{{.ACCOUNT_ID}}'
       REGION: '{{default "us-east-2" .REGION}}'
+      COMMIT_ID:
+        sh: git rev-parse --short=11 HEAD
     cmds:
       - docker build -t rusticators-vpc -f ./Dockerfile.aws .
-      - docker tag rusticators-vpc:latest {{.ACCOUNT_ID}}.dkr.ecr.{{.REGION}}.amazonaws.com/{{.ECR_REPO}}:{{.CLI_ARGS}}
-      - docker push {{.ACCOUNT_ID}}.dkr.ecr.{{.REGION}}.amazonaws.com/{{.ECR_REPO}}:{{.CLI_ARGS}}
+      - docker tag rusticators-vpc:latest {{.ACCOUNT_ID}}.dkr.ecr.{{.REGION}}.amazonaws.com/{{.ECR_REPO}}:latest
+      - docker tag rusticators-vpc:latest {{.ACCOUNT_ID}}.dkr.ecr.{{.REGION}}.amazonaws.com/{{.ECR_REPO}}:{{.COMMIT_ID}}
+      - docker push {{.ACCOUNT_ID}}.dkr.ecr.{{.REGION}}.amazonaws.com/{{.ECR_REPO}}:{{.COMMIT_ID}}
 
   containertest:
     cmds:

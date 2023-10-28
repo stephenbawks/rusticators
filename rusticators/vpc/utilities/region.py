@@ -4,7 +4,7 @@ from typing import Optional
 import boto3
 from aws_lambda_powertools import Logger
 from aws_lambda_powertools.event_handler import Response, content_types
-from cachetools import LRUCache, TTLCache, cached
+from cachetools import TTLCache, cached
 from models.region_azs import Region
 
 logger = Logger()
