@@ -11,6 +11,7 @@ from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from utilities.region import get_region_azs
 from utilities.vpc import generate_vpc
+from http import HTTPStatus
 
 tracer = Tracer()
 logger = Logger()
@@ -31,9 +32,9 @@ def handle_not_found_errors(exc: NotFoundError) -> Response:
     """
     logger.info(f"Not found route: {app.current_event.path}")
     return Response(
-        status_code=418,
+        status_code=HTTPStatus.NOT_FOUND,
         content_type=content_types.APPLICATION_JSON,
-        body=json.dumps({"error": "Not found"}),
+        body=json.dumps({"message": "Path Not found"}),
     )
 
 
@@ -47,9 +48,9 @@ def calculate_vpc() -> dict:
     except json.JSONDecodeError as e:
         logger.debug(e)
         return Response(
-            status_code=400,
+            status_code=HTTPStatus.BAD_REQUEST,
             content_type=content_types.APPLICATION_JSON,
-            body=json.dumps({"error": "Invalid JSON"}),
+            body=json.dumps({"message": "Invalid JSON"}),
         )
 
     vpc_type = request_data.get("vpc_type")
