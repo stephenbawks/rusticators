@@ -98,10 +98,10 @@ def generate_vpc(
         )
     except ValueError as error:
         return Response(
-                status_code=HTTPStatus.INTERNAL_SERVER_ERROR.value,
-                content_type=content_types.APPLICATION_JSON,
-                body=json.dumps(error),
-            )
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR.value,
+            content_type=content_types.APPLICATION_JSON,
+            body=json.dumps(error),
+        )
 
     public_subnets = [str(available_public_subnets[item]) for item in number_of_public]
     private_subnets = [
@@ -120,4 +120,3 @@ def generate_vpc(
 
     logger.debug(return_object)
     return return_object
-

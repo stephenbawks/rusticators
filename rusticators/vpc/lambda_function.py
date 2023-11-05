@@ -31,7 +31,7 @@ def handle_not_found_errors(exc: NotFoundError) -> Response:
         Response: dict
     """
     logger.info(f"Not found route: {app.current_event.path}")
-    return{
+    return {
         "statusCode": HTTPStatus.NOT_FOUND.value,
         "body": json.dumps({"message": "Path Not found"}),
     }
@@ -49,7 +49,11 @@ def calculate_vpc() -> dict:
             return Response(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR.value,
                 content_type=content_types.APPLICATION_JSON,
-                body=json.dumps({"message": "Invalid JSON. Appears you may be double encoding the body."}),
+                body=json.dumps(
+                    {
+                        "message": "Invalid JSON. Appears you may be double encoding the body."
+                    }
+                ),
             )
     except json.decoder.JSONDecodeError as error:
         logger.info(error)
