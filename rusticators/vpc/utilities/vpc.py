@@ -37,7 +37,7 @@ def generate_vpc(
         body = {"message": f"vpc_type must a string value of {supported_vpc_types}"}
         print(body)
         return Response(
-            status_code=HTTPStatus.BAD_REQUEST,
+            status_code=HTTPStatus.BAD_REQUEST.value,
             content_type=content_types.APPLICATION_JSON,
             body=json.dumps(body),
         )
@@ -48,7 +48,7 @@ def generate_vpc(
         }
         print(body)
         return Response(
-            status_code=HTTPStatus.BAD_REQUEST,
+            status_code=HTTPStatus.BAD_REQUEST.value,
             content_type=content_types.APPLICATION_JSON,
             body=json.dumps(body),
         )
@@ -58,7 +58,7 @@ def generate_vpc(
     except ValueError:
         body = {"message": 'cidr_block must be a string formatted like "10.150.0.0/22"'}
         return Response(
-            status_code=HTTPStatus.BAD_REQUEST,
+            status_code=HTTPStatus.BAD_REQUEST.value,
             content_type=content_types.APPLICATION_JSON,
             body=json.dumps(body),
         )
@@ -66,7 +66,7 @@ def generate_vpc(
     if not isinstance(ephemeral, bool):
         body = {"message": "ephemeral must be a boolean value"}
         return Response(
-            status_code=HTTPStatus.BAD_REQUEST,
+            status_code=HTTPStatus.BAD_REQUEST.value,
             content_type=content_types.APPLICATION_JSON,
             body=json.dumps(body),
         )
@@ -98,7 +98,7 @@ def generate_vpc(
         )
     except ValueError as error:
         return Response(
-                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR.value,
                 content_type=content_types.APPLICATION_JSON,
                 body=json.dumps(error),
             )
@@ -119,8 +119,5 @@ def generate_vpc(
         return_object["ephemeral"] = ephemeral_subnets
 
     logger.debug(return_object)
-    return Response(
-            status_code=HTTPStatus.OK,
-            content_type=content_types.APPLICATION_JSON,
-            body=json.dumps(return_object),
-        )
+    return return_object
+
