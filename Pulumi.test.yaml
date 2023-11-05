@@ -6,6 +6,6 @@ config:
   rusticators:api_domain_name: api-test.rusticators.dev
   rusticators:certificate_arn: arn:aws:acm:us-east-1:547201116507:certificate/9bc827c4-0649-4a03-8143-42b1c0e66d1d
   rusticators:lambda_vpc_memory: "192"
-  rusticators:log_level: INFO
+  rusticators:log_level: DEBUG
   rusticators:powertools_layer: arn:aws:lambda:us-east-2:017000801446:layer:AWSLambdaPowertoolsPythonV2-Arm64:46
   rusticators:route_53_zone: Z0095259WE7FOON4F5GP

@@ -5,6 +5,7 @@ from aws_lambda_powertools import Logger
 from aws_lambda_powertools.event_handler import Response, content_types
 from cachetools import LRUCache, cached
 from utilities.vpc_layouts import get_vpc_layout
+from http import HTTPStatus
 
 logger = Logger()
 
@@ -33,21 +34,21 @@ def generate_vpc(
         supported_subnet_masks = [56]
 
     if vpc_type not in supported_vpc_types:
-        body = {"error": f"vpc_type must a string value of {supported_vpc_types}"}
+        body = {"message": f"vpc_type must a string value of {supported_vpc_types}"}
         print(body)
         return Response(
-            status_code=400,
+            status_code=HTTPStatus.BAD_REQUEST.value,
             content_type=content_types.APPLICATION_JSON,
             body=json.dumps(body),
         )
 
     if subnet_mask not in supported_subnet_masks:
         body = {
-            "error": f"subnet_mask must be an integer value of {supported_subnet_masks}"
+            "message": f"subnet_mask must be an integer value of {supported_subnet_masks}"
         }
         print(body)
         return Response(
-            status_code=400,
+            status_code=HTTPStatus.BAD_REQUEST.value,
             content_type=content_types.APPLICATION_JSON,
             body=json.dumps(body),
         )
@@ -55,17 +56,17 @@ def generate_vpc(
     try:
         ip_address(cidr_block)
     except ValueError:
-        body = {"error": 'cidr_block must be a string formatted like "10.150.0.0/22"'}
+        body = {"message": 'cidr_block must be a string formatted like "10.150.0.0/22"'}
         return Response(
-            status_code=400,
+            status_code=HTTPStatus.BAD_REQUEST.value,
             content_type=content_types.APPLICATION_JSON,
             body=json.dumps(body),
         )
 
     if not isinstance(ephemeral, bool):
-        body = {"error": "ephemeral must be a boolean value"}
+        body = {"message": "ephemeral must be a boolean value"}
         return Response(
-            status_code=400,
+            status_code=HTTPStatus.BAD_REQUEST.value,
             content_type=content_types.APPLICATION_JSON,
             body=json.dumps(body),
         )
@@ -95,8 +96,12 @@ def generate_vpc(
                 prefixlen_diff=ephemeral_subnet_size
             )
         )
-    except ValueError as e:
-        return {"error": f"{e}"}
+    except ValueError as error:
+        return Response(
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR.value,
+            content_type=content_types.APPLICATION_JSON,
+            body=json.dumps(error),
+        )
 
     public_subnets = [str(available_public_subnets[item]) for item in number_of_public]
     private_subnets = [
