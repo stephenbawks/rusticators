@@ -66,9 +66,8 @@ def calculate_vpc() -> dict:
     vpc_type = request_data.get("vpc_type")
     cidr_block = request_data.get("cidr_block")
     subnet_mask = request_data.get("subnet_mask")
-    ephemeral = request_data.get("ephemeral")
-    if ephemeral is None:
-        ephemeral = False
+    # default ephemeral to False just in case it is not provided
+    ephemeral = request_data.get("ephemeral", False)
 
     return generate_vpc(
         vpc_type=vpc_type,
